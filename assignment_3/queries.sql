@@ -88,3 +88,13 @@
 -- +-------------------+
 -- 1 row in set (0.00 sec)
 
+-- mysql> SELECT *
+--     -> FROM department
+--     -> WHERE budget = (SELECT MAX(budget) FROM department);
+-- +-----+-------------+----------+-----------+
+-- | did | dname       | building | budget    |
+-- +-----+-------------+----------+-----------+
+-- |   6 | Mathematics | C        | 190000.00 |
+-- +-----+-------------+----------+-----------+
+-- 1 row in set (0.00 sec)
+
