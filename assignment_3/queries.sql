@@ -1,0 +1,90 @@
+-- mysql> SELECT DISTINCT(fname) FROM faculty;
+-- +--------------+
+-- | fname        |
+-- +--------------+
+-- | Dr Sailesh   |
+-- | Dr Mukesh    |
+-- | Dr Mohan     |
+-- | Dr Anupam    |
+-- | Dr Sanjay    |
+-- | Dr Dhananjay |
+-- | Dr Sunidhi   |
+-- | Dr Priyanka  |
+-- | Dr Anoushka  |
+-- +--------------+
+-- 9 rows in set (0.00 sec)
+
+-- mysql> SELECT DISTINCT(dname) FROM department;
+-- +------------------+
+-- | dname            |
+-- +------------------+
+-- | Computer Science |
+-- | Mathematics      |
+-- | History          |
+-- | Physics          |
+-- | Business         |
+-- | Electronics      |
+-- | Arts             |
+-- | Commerce         |
+-- +------------------+
+-- 8 rows in set (0.00 sec)
+
+-- mysql> SELECT fname FROM faculty AS f, teaches AS t WHERE f.fid = t.fid AND t.cid = 1;
+-- +-------------+
+-- | fname       |
+-- +-------------+
+-- | Dr Sailesh  |
+-- | Dr Anoushka |
+-- +-------------+
+-- 2 rows in set (0.00 sec)
+
+-- mysql> SELECT sname FROM student AS s, takes AS t WHERE s.sid = t.sid GROUP BY sname;
+-- +----------------+
+-- | sname          |
+-- +----------------+
+-- | John Doe       |
+-- | Jane Smith     |
+-- | Mike Johnson   |
+-- | Emily White    |
+-- | Alex Brown     |
+-- | Rachel Green   |
+-- | Chris Evans    |
+-- | Anna Taylor    |
+-- | David Lee      |
+-- | Sophia Kim     |
+-- | Matthew Davis  |
+-- | Olivia Miller  |
+-- | Daniel Wilson  |
+-- | Emma Carter    |
+-- | Ethan Clark    |
+-- | Isabella Lewis |
+-- | Michael Hall   |
+-- | Ava Allen      |
+-- | Andrew Adams   |
+-- | Grace Moore    |
+-- +----------------+
+-- 20 rows in set (0.00 sec)
+
+-- mysql> SELECT sname FROM student AS s, takes AS t WHERE s.sid = t.sid GROUP BY sname HAVING COUNT(cid) > 1;
+-- +--------------+
+-- | sname        |
+-- +--------------+
+-- | John Doe     |
+-- | Jane Smith   |
+-- | Mike Johnson |
+-- | Emily White  |
+-- | Alex Brown   |
+-- +--------------+
+-- 5 rows in set (0.00 sec)
+
+-- mysql> SELECT sname FROM student AS s, takes AS t WHERE s.sid = t.sid GROUP BY sname HAVING COUNT(cid) = 3;
+-- Empty set (0.00 sec)
+
+-- mysql> SELECT sname FROM student AS s WHERE s.sid NOT IN (SELECT takes.sid FROM takes);
+-- +-------------------+
+-- | sname             |
+-- +-------------------+
+-- | Cosimo de' Medici |
+-- +-------------------+
+-- 1 row in set (0.00 sec)
+
