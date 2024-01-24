@@ -98,3 +98,14 @@
 -- +-----+-------------+----------+-----------+
 -- 1 row in set (0.00 sec)
 
+
+WITH faculty_course_count AS (
+    SELECT f.fname, COUNT(t.cid) AS subject_count
+    FROM faculty AS f, teaches AS t
+    WHERE t.fid = f.fid
+    GROUP BY f.fname
+)
+
+SELECT ALL fname 
+FROM faculty_course_count
+WHERE subject_count = (SELECT MAX(subject_count) FROM faculty_course_count);

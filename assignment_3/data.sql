@@ -76,7 +76,7 @@ INSERT INTO teaches (fid, cid) VALUES
 (1, 9),
 (9, 9),
 (1, 10),
-(10, 10);
+(10, 2);
 
 INSERT INTO takes (sid, cid) VALUES
 (1, 1),
