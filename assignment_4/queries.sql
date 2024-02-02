@@ -180,3 +180,59 @@ SELECT DISTINCT(sname) FROM student_info
 -- | Grace Moore |
 -- +-------------+
 -- 2 rows in set (0.00 sec)
+
+
+-----------14
+-- SELECT t.sid, c.cid, d.did FROM takes t, course c, department d WHERE t.cid = c.cid AND c.did = d.did;
+
+-- SELECT t.sid, d.did FROM takes t, course c, department d WHERE t.cid = c.cid AND c.did = d.did;
+
+-- SELECT t.sid, d.did, d.dname FROM takes t, course c, department d WHERE t.cid = c.cid AND c.did = d.did;
+
+WITH department_info (did, dname, total_students) AS (
+    SELECT d.did, d.dname, count(*) total_students 
+    FROM takes t, course c, department d 
+    WHERE t.cid = c.cid AND c.did = d.did 
+    GROUP BY did
+)
+
+SELECT dname FROM department_info WHERE total_students = (SELECT MAX(total_students) FROM department_info);
+-- +-------------+
+-- | dname       |
+-- +-------------+
+-- | Mathematics |
+-- | History     |
+-- | Physics     |
+-- | Business    |
+-- | Mathematics |
+-- +-------------+
+-- 5 rows in set (0.00 sec)
+
+-----------15
+-- SELECT t.fid, d.did, d.dname FROM teaches t, course c, department d WHERE t.cid = c.cid AND c.did = d.did;
+
+WITH department_info (did, dname, total_faculty) AS (
+    SELECT d.did, d.dname, count(*) total_faculty
+    FROM teaches t, course c, department d 
+    WHERE t.cid = c.cid AND c.did = d.did 
+    GROUP BY did
+)
+
+SELECT dname FROM department_info WHERE total_faculty = (SELECT MAX(total_faculty) FROM department_info);
+-- +-------------+
+-- | dname       |
+-- +-------------+
+-- | Mathematics |
+-- +-------------+
+-- 1 row in set (0.00 sec)
+
+------------16
+
+WITH alias AS (
+    SELECT t.fid, t.cid, c.cname, d.did, d.dname 
+    FROM teaches t, course c, department d
+    WHERE t.cid = c.cid AND c.did = d.did
+)
+
+SELECT * FROM alias
+WHERE dname IN ("Computer Science", "Electronics");
