@@ -236,3 +236,22 @@ WITH alias AS (
 
 SELECT * FROM alias
 WHERE dname IN ("Computer Science", "Electronics");
+
+
+---- 
+WITH alias AS (
+    SELECT t.fid, t.cid, c.cname, d.did, d.dname 
+    FROM teaches t, course c, department d
+    WHERE t.cid = c.cid AND c.did = d.did AND (dname = "Computer Science" OR dname = "Electronics")
+)
+
+SELECT * FROM alias;
+
+
+WITH course_info AS (
+    SELECT t.fid, t.cid, c.cname, d.did, d.dname 
+    FROM teaches t, course c, department d
+    WHERE t.cid = c.cid AND c.did = d.did AND (dname = "Computer Science" OR dname = "Electronics")
+)
+
+SELECT t1.cname, t2.cname FROM course_info t1, course_info t2 WHERE t1.fid = t2.fid t1.cname;
