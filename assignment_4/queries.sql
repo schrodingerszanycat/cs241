@@ -59,7 +59,8 @@ WITH fac_info (fid, fname, stud_count) AS (
 
 SELECT * FROM fac_info WHERE stud_count = (SELECT MAX(stud_count) FROM fac_info);
 
----------10 (What is the difference between these 2 queries?)
+-----------10 
+-- (What is the difference between these 2 queries?)
 
 -- Query number 1
 -- WITH student_info (sid, sname, did) AS (
@@ -76,16 +77,6 @@ FROM student s, takes t, course c
 WHERE s.sid = t.sid AND t.cid = c.cid 
 GROUP BY s.sid, s.sname 
 HAVING COUNT(c.did) >= 2;
--- +--------------+
--- | sname        |
--- +--------------+
--- | John Doe     |
--- | Jane Smith   |
--- | Mike Johnson |
--- | Emily White  |
--- | Alex Brown   |
--- +--------------+
--- 5 rows in set (0.00 sec)
 
 ----------11
 SELECT s.sname 
@@ -93,26 +84,6 @@ FROM student s, takes t, course c
 WHERE s.sid = t.sid AND t.cid = c.cid 
 GROUP BY s.sid, s.sname 
 HAVING COUNT(c.did) = 1;
--- +----------------+
--- | sname          |
--- +----------------+
--- | Matthew Davis  |
--- | Olivia Miller  |
--- | Daniel Wilson  |
--- | Emma Carter    |
--- | Ethan Clark    |
--- | Rachel Green   |
--- | Isabella Lewis |
--- | Chris Evans    |
--- | Michael Hall   |
--- | Anna Taylor    |
--- | Ava Allen      |
--- | David Lee      |
--- | Andrew Adams   |
--- | Sophia Kim     |
--- | Grace Moore    |
--- +----------------+
--- 15 rows in set (0.00 sec)
 
 ---------12
 
@@ -136,29 +107,6 @@ WITH student_info (sid, sname, teaching_faculty, advising_faculty) AS (
 )
 
 SELECT DISTINCT(sname) FROM student_info WHERE teaching_faculty = advising_faculty;
--- +----------------+
--- | sname          |
--- +----------------+
--- | John Doe       |
--- | Jane Smith     |
--- | Mike Johnson   |
--- | Emily White    |
--- | Alex Brown     |
--- | Rachel Green   |
--- | Chris Evans    |
--- | Anna Taylor    |
--- | David Lee      |
--- | Matthew Davis  |
--- | Olivia Miller  |
--- | Daniel Wilson  |
--- | Emma Carter    |
--- | Ethan Clark    |
--- | Isabella Lewis |
--- | Michael Hall   |
--- | Ava Allen      |
--- | Andrew Adams   |
--- +----------------+
--- 18 rows in set (0.00 sec)
 
 -----------13
 WITH student_info (sid, sname, teaching_faculty, advising_faculty) AS (
@@ -173,14 +121,6 @@ SELECT DISTINCT(sname) FROM student_info
         FROM student_info 
         WHERE teaching_faculty = advising_faculty
     );
--- +-------------+
--- | sname       |
--- +-------------+
--- | Sophia Kim  |
--- | Grace Moore |
--- +-------------+
--- 2 rows in set (0.00 sec)
-
 
 -----------14
 -- SELECT t.sid, c.cid, d.did FROM takes t, course c, department d WHERE t.cid = c.cid AND c.did = d.did;
@@ -197,16 +137,6 @@ WITH department_info (did, dname, total_students) AS (
 )
 
 SELECT dname FROM department_info WHERE total_students = (SELECT MAX(total_students) FROM department_info);
--- +-------------+
--- | dname       |
--- +-------------+
--- | Mathematics |
--- | History     |
--- | Physics     |
--- | Business    |
--- | Mathematics |
--- +-------------+
--- 5 rows in set (0.00 sec)
 
 -----------15
 -- SELECT t.fid, d.did, d.dname FROM teaches t, course c, department d WHERE t.cid = c.cid AND c.did = d.did;
@@ -219,39 +149,46 @@ WITH department_info (did, dname, total_faculty) AS (
 )
 
 SELECT dname FROM department_info WHERE total_faculty = (SELECT MAX(total_faculty) FROM department_info);
--- +-------------+
--- | dname       |
--- +-------------+
--- | Mathematics |
--- +-------------+
--- 1 row in set (0.00 sec)
 
 ------------16
+-- WITH alias AS (
+--     SELECT t.fid, t.cid, c.cname, d.did, d.dname 
+--     FROM teaches t, course c, department d
+--     WHERE t.cid = c.cid AND c.did = d.did AND (dname = "Computer Science" OR dname = "Electronics")
+-- )
 
-WITH alias AS (
-    SELECT t.fid, t.cid, c.cname, d.did, d.dname 
-    FROM teaches t, course c, department d
-    WHERE t.cid = c.cid AND c.did = d.did
-)
-
-SELECT * FROM alias
-WHERE dname IN ("Computer Science", "Electronics");
-
-
----- 
-WITH alias AS (
-    SELECT t.fid, t.cid, c.cname, d.did, d.dname 
-    FROM teaches t, course c, department d
-    WHERE t.cid = c.cid AND c.did = d.did AND (dname = "Computer Science" OR dname = "Electronics")
-)
-
-SELECT * FROM alias;
-
-
+-- SELECT * FROM alias;
 WITH course_info AS (
     SELECT t.fid, t.cid, c.cname, d.did, d.dname 
     FROM teaches t, course c, department d
-    WHERE t.cid = c.cid AND c.did = d.did AND (dname = "Computer Science" OR dname = "Electronics")
+    WHERE t.cid = c.cid AND c.did = d.did AND d.dname IN ("Computer Science", "Electronics")
 )
 
-SELECT t1.cname, t2.cname FROM course_info t1, course_info t2 WHERE t1.fid = t2.fid t1.cname;
+SELECT t1.cname course1, t2.cname course2 FROM course_info t1, course_info t2 WHERE t1.fid = t2.fid AND t1.cid < t2.cid;
+
+-------------17
+SELECT s.sname FROM student s, takes t1, takes t2 
+WHERE s.sid = t1.sid    
+  AND s.sid = t2.sid 
+  AND t1.cid = 1 
+  AND t2.cid = 2;
+
+-------------18
+WITH department_info AS (
+    SELECT f.did, d.dname, AVG(f.salary) AS avg_salary FROM faculty f, department d WHERE f.did = d.did GROUP BY f.did, d.dname
+)
+
+SELECT dname FROM department_info WHERE avg_salary = (SELECT MAX(avg_salary) FROM department_info);
+
+------------19
+WITH department_info AS (
+    SELECT f.did, d.dname, AVG(f.salary) AS avg_salary FROM faculty f, department d WHERE f.did = d.did GROUP BY f.did, d.dname
+)
+
+SELECT dname FROM department_info WHERE avg_salary = (SELECT MIN(avg_salary) FROM department_info);
+
+------------20
+WITH dept_info AS ( 
+    SELECT s.age, d.dname FROM student s, department d WHERE s.did = d.did
+)
+SELECT DISTINCT dname FROM dept_info WHERE age = (SELECT MIN(age) FROM dept_info);
