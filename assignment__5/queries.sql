@@ -113,6 +113,7 @@ WHERE st.cid = c.cid AND st.n_students = (SELECT MAX(n_students) FROM student_in
 WITH student_info AS (
     SELECT cid, COUNT(*) n_students FROM marks WHERE marks = 70 GROUP BY cid
 )
-
 SELECT st.cid, c.cname FROM student_info st, course c 
 WHERE st.cid = c.cid AND st.n_students IN (SELECT COUNT(*) n_students FROM marks GROUP BY cid);
+
+
