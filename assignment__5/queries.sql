@@ -33,14 +33,15 @@ WITH dept_info AS (
 SELECT did, dname FROM dept_info WHERE n_courses = (SELECT MIN(n_courses) FROM dept_info);
 
 -- 5
-SELECT cname FROM course 
-WHERE credit = (SELECT MAX(credit) FROM course WHERE credit NOT IN (SELECT MAX(credit) FROM course));
+-- SELECT cname FROM course 
+-- WHERE credit = (SELECT MAX(credit) FROM course WHERE credit NOT IN (SELECT MAX(credit) FROM course));
 
 -- Alternate query
 
 SELECT cname FROM course 
 WHERE credit = (
-    SELECT DISTINCT credit FROM course t1 WHERE (SELECT COUNT(DISTINCT credit) FROM course t2 WHERE t2.credit < t1.credit) = 1
+    SELECT DISTINCT credit FROM course t1 
+    WHERE (SELECT COUNT(DISTINCT credit) FROM course t2 WHERE t2.credit < t1.credit) = 1
 );
 
 -- 6
@@ -182,7 +183,7 @@ FROM marks, student
 WHERE student.sid = marks.sid
 GROUP BY sid;
 
--- 16
+-- 16   
 DELIMITER //
 CREATE FUNCTION get_instructor_count(dept_name VARCHAR(255))
 RETURNS INT DETERMINISTIC
